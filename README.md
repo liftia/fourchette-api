@@ -7,31 +7,21 @@ Hono, `node:sqlite` en mémoire, TypeScript exécuté directement par Node, test
 ## Prérequis
 
 - Node 24.15 ou plus, et git.
-- Un compte GitHub. La CLI `gh` est conseillée, pas obligatoire.
+- Un compte GitHub.
 
 ## Installer les trois dépôts
 
-Forkez les trois dépôts sur votre compte, puis clonez vos forks côte à côte dans un même dossier `fourchette/`. Votre fork est `origin` ; le dépôt de départ est `upstream`.
-
-Avec `gh` :
+Sur github.com, forkez les trois dépôts sur votre compte (bouton **Fork**, puis **Create fork**) : `liftia/fourchette-api`, `liftia/fourchette-pos`, `liftia/fourchette-kitchen`. Puis clonez vos forks côte à côte dans un même dossier `fourchette/` :
 
 ```
 mkdir fourchette
 cd fourchette
-gh repo fork liftia/fourchette-api --clone
-gh repo fork liftia/fourchette-pos --clone
-gh repo fork liftia/fourchette-kitchen --clone
-```
-
-`gh` choisit `upstream` comme dépôt par défaut : pour que vos PR restent dans votre fork, lancez dans chacun des trois dossiers `gh repo set-default <votre-compte>/<dépôt>`.
-
-Sans `gh` : forkez sur github.com, puis pour chaque dépôt
-
-```
 git clone https://github.com/<votre-compte>/fourchette-api.git
-cd fourchette-api
-git remote add upstream https://github.com/liftia/fourchette-api.git
+git clone https://github.com/<votre-compte>/fourchette-pos.git
+git clone https://github.com/<votre-compte>/fourchette-kitchen.git
 ```
+
+Votre fork est `origin`. Le dépôt de départ, `liftia`, devient `upstream` : le pré-vol l'ajoute s'il manque.
 
 ## Vérifier le poste
 
@@ -41,7 +31,7 @@ Dans `fourchette-api` :
 npm run preflight
 ```
 
-Il contrôle Node et git, trouve les deux autres dépôts, joint `upstream`, installe les trois (`npm ci`), lance leurs contrôles, démarre les trois applications et les arrête. Une ligne par contrôle ; tout doit être ✔.
+Il contrôle Node et git, trouve les deux autres dépôts, ajoute `upstream` s'il manque et le joint, installe les trois (`npm ci`), lance leurs contrôles, démarre les trois applications et les arrête. Une ligne par contrôle ; tout doit être ✔.
 
 ## Lancer
 
@@ -82,8 +72,9 @@ Travaillez sur une branche `feature/<nom>` partie de la branche de départ, dans
 ```
 git switch -c feature/<nom>
 git push -u origin feature/<nom>
-gh pr create --base <branche>
 ```
+
+Puis, sur github.com, dans votre fork : **Compare & pull request**. GitHub propose par défaut le dépôt `liftia` comme base : choisissez votre fork (`base repository`) et la branche de départ (`base`).
 
 ## Le filet automatique
 

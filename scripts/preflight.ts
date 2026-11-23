@@ -4,6 +4,10 @@ import type { App, Running } from './processes.ts'
 
 export const MINIMUM_NODE = [24, 15] as const
 
+export function upstreamUrl(appName: string): string {
+  return `https://github.com/liftia/fourchette-${appName}.git`
+}
+
 const STARTUP_MS = 90_000
 const RELEASE_MS = 10_000
 const OUTPUT_TAIL = 1200
@@ -87,7 +91,12 @@ async function main(): Promise<number> {
   report("fourchette-pos et fourchette-kitchen à côté de l'API", true)
   const apps = found.apps
   for (const app of apps) {
-    const url = git(['remote', 'get-url', 'upstream'], app.dir)
+    let url = git(['remote', 'get-url', 'upstream'], app.dir)
+    if (!url.ok) {
+      const added = git(['remote', 'add', 'upstream', upstreamUrl(app.name)], app.dir)
+      report(`${app.name} : distant upstream ajouté (${upstreamUrl(app.name)})`, added.ok, added.output)
+      url = git(['remote', 'get-url', 'upstream'], app.dir)
+    }
     const reached = url.ok ? git(['ls-remote', '--heads', 'upstream'], app.dir) : url
     report(`${app.name} : le distant upstream répond`, reached.ok, url.ok ? reached.output : 'aucun distant upstream (voir le README)')
   }
